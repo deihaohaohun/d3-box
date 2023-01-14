@@ -38,11 +38,12 @@ const video = reactive({
 });
 const videoRules = reactive<FormRules>({
   title: [{ required: true, message: "名称不能为空", trigger: "blur" }],
-  covre: [{ required: true, message: "封面不能为空", trigger: "blur" }],
+  cover: [{ required: true, message: "封面不能为空", trigger: "blur" }],
   total: [{ required: true, message: "总数不能为空", trigger: "blur" }],
   type: [{ required: true, message: "类型不能为空", trigger: "blur" }],
 });
 const createVideo = async () => {
+  await videoFormRef.value?.validate();
   await addVideo(video);
   ElMessage.success("创建成功!");
   videoFormRef.value?.resetFields();
@@ -114,24 +115,24 @@ const createVideo = async () => {
     :show-close="false"
   >
     <el-form
-      ref="ruleFormRef"
+      ref="videoFormRef"
       :model="video"
       :rules="videoRules"
       label-width="120px"
     >
-      <el-form-item label="名称">
+      <el-form-item label="名称" prop="title">
         <el-input v-model="video.title" />
       </el-form-item>
-      <el-form-item label="封面">
+      <el-form-item label="封面" prop="cover">
         <el-input v-model="video.cover" />
       </el-form-item>
       <el-form-item label="预览">
-        <img :src="video.cover" alt="" />
+        <img :src="video.cover" />
       </el-form-item>
-      <el-form-item label="总数">
+      <el-form-item label="总数" prop="total">
         <el-input-number v-model="video.total" :min="1" />
       </el-form-item>
-      <el-form-item label="类型">
+      <el-form-item label="类型" prop="type">
         <el-radio-group v-model="video.type" class="ml-4">
           <el-radio :label="0">番剧</el-radio>
           <el-radio :label="1">电影</el-radio>
@@ -142,7 +143,7 @@ const createVideo = async () => {
 
     <template #footer>
       <el-button @click="newVideoFlag = false">取消</el-button>
-      <el-button type="primary" @click="createVideo">确认</el-button>
+      <el-button type="primary" @click="createVideo()">确认</el-button>
     </template>
   </el-dialog>
 </template>
