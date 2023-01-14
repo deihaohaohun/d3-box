@@ -12,7 +12,7 @@
   resolved "https://registry.npmmirror.com/@ctrl/tinycolor/-/tinycolor-3.5.0.tgz#6e52b3d1c38d13130101771821e09cdd414a16bc"
   integrity sha512-tlJpwF40DEQcfR/QF+wNMVyGMaO9FQp6Z1Wahj4Gk3CJQYHwA2xVG7iKDFdW6zuxZY9XWOpGcfNCTsX4McOsOg==
 
-"@element-plus/icons-vue@^2.0.6":
+"@element-plus/icons-vue@^2.0.10", "@element-plus/icons-vue@^2.0.6":
   version "2.0.10"
   resolved "https://registry.npmmirror.com/@element-plus/icons-vue/-/icons-vue-2.0.10.tgz#60808d613c3dbdad025577022be8a972739ade21"
   integrity sha512-ygEZ1mwPjcPo/OulhzLE7mtDrQBWI8vZzEWSNB2W/RNCRjoQGwbaK4N8lV4rid7Ts4qvySU3njMN7YCiSlSaTQ==
@@ -176,6 +176,11 @@
   version "4.14.191"
   resolved "https://registry.npmmirror.com/@types/lodash/-/lodash-4.14.191.tgz#09511e7f7cba275acd8b419ddac8da9a6a79e2fa"
   integrity sha512-BdZ5BCCvho3EIXw6wUCXHe7rS53AIDPLE+JzwgT+OsJk53oBfbSmZZ7CX4VaRoN78N+TJpFi9QPlfIVNmJYWxQ==
+
+"@types/node@^18.11.18":
+  version "18.11.18"
+  resolved "https://registry.npmmirror.com/@types/node/-/node-18.11.18.tgz#8dfb97f0da23c2293e554c5a50d61ef134d7697f"
+  integrity sha512-DHQpWGjyQKSHj3ebjFI/wRKcqQcdR+MoFBygntYOZytCqNfkd2ZC4ARDJ2DQqhjH5p85Nnd3jhUJIXrszFX/JA==
 
 "@types/web-bluetooth@^0.0.16":
   version "0.0.16"

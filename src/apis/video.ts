@@ -1,11 +1,16 @@
 import request from ".";
+import { Video } from "../schemas";
 
-let mongo = {
-  dataSource: "Cluster0",
-  database: "d3_box",
-  collection: "Video",
-};
+export async function getVideos(
+  state: "ing" | "done" | "not" = "ing"
+): Promise<any[]> {
+  return request.get(`/video/${state}`);
+}
 
-export async function getVideos(): Promise<{ documents: any[] }> {
-  return request.post("/find", mongo);
+export async function addEpisode(id: string): Promise<Video[]> {
+  return request.put(`/video/${id}`);
+}
+
+export async function addVideo(data: any): Promise<Video> {
+  return request.post(`/video/`, data);
 }
