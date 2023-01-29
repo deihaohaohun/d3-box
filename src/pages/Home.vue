@@ -1,16 +1,23 @@
 <script setup lang="ts">
 import { ElMessage, FormInstance, FormRules } from "element-plus";
-import { onMounted, reactive, ref } from "vue";
+import { nextTick, onMounted, reactive, ref } from "vue";
 import { addEpisode, addVideo, getVideos } from "../apis/video";
-import { Edit } from "@element-plus/icons-vue";
+import { Edit, Upload } from "@element-plus/icons-vue";
 import { Video } from "../schemas";
+import copy from "copy-to-clipboard";
+import JSONEditor from "jsoneditor";
+import "jsoneditor/dist/jsoneditor.min.css";
 
 let videos = ref<Video[]>([]);
 
 onMounted(async () => {
+  getWatchingVideo();
+});
+
+async function getWatchingVideo() {
   let resp = await getVideos();
   videos.value = resp;
-});
+}
 
 const status = (total: any, current: any) => {
   if (total === current) return "标记为看过";
@@ -30,7 +37,7 @@ const onBtnClicked = async (total: any, current: any, id: any) => {
 const keyword = ref("");
 const newVideoFlag = ref(false);
 const videoFormRef = ref<FormInstance>();
-const video = reactive({
+let video = reactive({
   title: "",
   cover: "",
   total: 1,
@@ -47,7 +54,51 @@ const createVideo = async () => {
   await addVideo(video);
   ElMessage.success("创建成功!");
   videoFormRef.value?.resetFields();
+  newVideoFlag.value = false;
+  getWatchingVideo();
 };
+
+const scriptFlag = ref(false);
+const scriptRef = ref();
+let jsoneditor: JSONEditor;
+const copyScript = () => {
+  copy(`
+    let cover = document.querySelector('#media_module img').src
+    let title = document.querySelector('a.media-title').innerText
+    let total = document.querySelectorAll('#eplist_module .ep-item ').length
+    console.log({
+      cover,
+      title,
+      total
+    })
+  `);
+  ElMessage.success("复制脚本成功!");
+};
+const importScriptData = async () => {
+  scriptFlag.value = true;
+  await nextTick();
+  let text = await navigator.clipboard.readText();
+
+  jsoneditor = new JSONEditor(scriptRef.value);
+  try {
+    let json = JSON.parse(text);
+    jsoneditor.set(json);
+  } catch (e) {
+    jsoneditor.set({});
+  }
+};
+const cancelScript = async () => {
+  scriptFlag.value = false;
+  await nextTick();
+  jsoneditor.destroy();
+};
+async function createVideoFromClipboard() {
+  let { title, cover, total } = jsoneditor.get();
+  video.title = title;
+  video.cover = cover;
+  video.total = total;
+  scriptFlag.value = false;
+}
 </script>
 
 <template>
@@ -142,8 +193,25 @@ const createVideo = async () => {
     </el-form>
 
     <template #footer>
-      <el-button @click="newVideoFlag = false">取消</el-button>
+      <el-button-group>
+        <el-button type="primary" @click="copyScript">复制脚本</el-button>
+        <el-tooltip content="导入脚本执行结果" placement="top">
+          <el-button type="primary" :icon="Upload" @click="importScriptData" />
+        </el-tooltip>
+      </el-button-group>
+      <el-button class="ml-3" @click="newVideoFlag = false">取消</el-button>
       <el-button type="primary" @click="createVideo()">确认</el-button>
+    </template>
+  </el-dialog>
+
+  <el-dialog v-model="scriptFlag" width="30%">
+    <div ref="scriptRef"></div>
+
+    <template #footer>
+      <el-button class="ml-3" @click="cancelScript">取消</el-button>
+      <el-button type="primary" @click="createVideoFromClipboard"
+        >确认</el-button
+      >
     </template>
   </el-dialog>
 </template>
